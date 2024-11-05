@@ -4,7 +4,8 @@ import yfinance as yf
 import json
 
 def stock_form(request):
-    return render(request, 'stockapp/stock_form.html')
+    # Update this line if you keep stock_form.html in a different directory
+    return render(request, 'stock_form.html')
 
 def fetch_stock_data(request):
     if request.method == 'POST':
@@ -16,7 +17,7 @@ def fetch_stock_data(request):
             end_date = request.POST['end-date']
             print(f"Ticker: {ticker}, Start Date: {start_date}, End Date: {end_date}")
 
-            data = yf.download(ticker, start=start_date, end=end_date)
+            data = yf.download(ticker, start=start_date, end=end-date)
             print(f"Fetched data for {ticker}:")
             print(data)
 
