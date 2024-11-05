@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data</title>
+    {% load static %}
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        #result {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Stock Data</h1>
+        <form id="stock-form" method="post" action="{% url 'fetch_stock_data' %}">
+            {% csrf_token %}
+            <label for="ticker">Stock Ticker Symbol:</label>
+            <input type="text" id="ticker" name="ticker" required>
+
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start-date" required>
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end-date" required>
+
+            <button type="submit">Get Stock Data</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        const form = document.getElementById('stock-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const data = await response.json();
+                console.log(data);  // Log the data to check what you received
+
+                // Limit data points to avoid rendering issues
+                const limitedData = data.slice(0, 10);
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';  // Clear previous content
+
+                limitedData.forEach(item => {
+                    const openPrice = item[Object.keys(item)[1]];
+                    const closePrice = item[Object.keys(item)[2]];
+                    if (openPrice !== undefined && closePrice !== undefined) {
+                        resultDiv.innerHTML += `<p>Date: ${new Date(item["('Date', '')"]).toLocaleDateString()} - Open: ${openPrice.toFixed(2)} - Close: ${closePrice.toFixed(2)}</p>`;
+                    } else {
+                        console.error("Data format is incorrect", item);
+                    }
+                });
+
+                if (limitedData.length > 0) {
+                    plotChart(limitedData);
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        });
+
+        // Function to plot chart using Chart.js
+        let chartInstance = null;
+        function plotChart(stockData) {
+            const ctx = document.createElement('canvas');
+            const resultDiv = document.getElementById('result');
+            resultDiv.appendChild(ctx);
+
+            // Clear the previous chart if it exists
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const dates = stockData.map(item => new Date(item["('Date', '')"]).toLocaleDateString());
+            const openPrices = stockData.map(item => item[Object.keys(item)[1]]);
+            const closePrices = stockData.map(item => item[Object.keys(item)[2]]);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Open Price',
+                            data: openPrices,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            fill: false,
+                        },
+                        {
+                            label: 'Close Price',
+                            data: closePrices,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>
