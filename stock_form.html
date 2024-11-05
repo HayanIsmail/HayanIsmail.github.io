@@ -5,31 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Data</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'stockapp/styles.css' %}">
-    <style>
-        .container {
-            max-height: 100vh;
-            overflow: hidden;
-        }
-
-        #result {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="container">
         <h1>Stock Data</h1>
-        <form id="stock-form" method="post" action="{% url 'fetch_stock_data' %}">
-            {% csrf_token %}
+        <form id="stock-form" method="post" action="fetch_stock_data">
             <label for="ticker">Stock Ticker Symbol:</label>
             <input type="text" id="ticker" name="ticker" required>
 
