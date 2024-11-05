@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Data</title>
-    {% load static %}
     <link rel="stylesheet" href="styles.css">
     <style>
         .container {
@@ -28,8 +27,7 @@
 <body>
     <div class="container">
         <h1>Stock Data</h1>
-        <form id="stock-form" method="post" action="{% url 'fetch_stock_data' %}">
-            {% csrf_token %}
+        <form id="stock-form" method="post" action="fetch_stock_data">
             <label for="ticker">Stock Ticker Symbol:</label>
             <input type="text" id="ticker" name="ticker" required>
 
