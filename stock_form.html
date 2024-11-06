@@ -22,13 +22,19 @@
             <label for="end-date">End Date:</label>
             <input type="date" id="end-date" name="end-date" required>
 
-            <button type="submit">Get Stock Data</button>
+            <button type="submit" id="submit-button">Get Stock Data</button>
         </form>
         <div id="result" style="height: 600px; overflow: hidden;"></div>
     </div>
 
     <script>
         const form = document.getElementById('stock-form');
+        const button = document.getElementById('submit-button');
+
+        button.addEventListener('click', () => {
+            console.log('Button clicked');  // Debugging output
+        });
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = new FormData(form);
