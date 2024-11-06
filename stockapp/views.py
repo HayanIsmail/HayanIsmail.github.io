@@ -13,7 +13,7 @@ def fetch_stock_data(request):
             start_date = request.POST.get('start-date')
             end_date = request.POST.get('end-date')
 
-            data = yf.download(ticker, start=start_date, end=end-date)
+            data = yf.download(ticker, start=start_date, end=end_date)
             if data.empty:
                 return JsonResponse({'error': f"No data found for ticker {ticker} in the given date range."}, status=404)
 
