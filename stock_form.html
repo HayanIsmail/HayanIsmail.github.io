@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <h1>Stock Data</h1>
-        <form id="stock-form" method="post" action="fetch_stock_data">
+        <form id="stock-form" method="post" action="{% url 'fetch_stock_data' %}">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
             <label for="ticker">Stock Ticker Symbol:</label>
             <input type="text" id="ticker" name="ticker" required>
